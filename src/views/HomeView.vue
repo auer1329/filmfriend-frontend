@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from '../components/HelloWorld.vue'
+import Startseite from '../components/Hello.vue'
 </script>
 
 <template>
   <main>
-
+    <Startseite msg="Startseite" />
   </main>
 </template>
