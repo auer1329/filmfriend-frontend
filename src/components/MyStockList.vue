@@ -1,25 +1,16 @@
 <template>
-  <div>
-    <table>
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Brand</th>
-        <th>ISO</th>
-        <th>Image</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="stock in stocks" :key="stock.id">
-        <td>{{ stock.name }}</td>
-        <td>{{ stock.brand }}</td>
-        <td>{{ stock.iso }}</td>
-        <td><img :src="stock.staticImageURL"  alt="thing.name" height="50px"></td>
-
-      </tr>
-      </tbody>
-    </table>
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="col" v-for="stock in stocks" :key="stock.id">
+      <div class="card">
+        <img :src=stock.staticImageURL class="card-img-top" :alt="stock.name">
+        <div class="card-body">
+          <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
+          <p class="card-text">{{ stock.description }}</p>
+        </div>
+      </div>
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -43,29 +34,6 @@ export default {
                 result.forEach(stock => {
                   this.stocks.push(stock)
                 })
-          })
-          .catch(error => console.log('error', error))
-    },
-    save () {
-      const baseUrl = process.env.VUE_APP_BACKEND_BASE_URL
-      const endpoint = baseUrl + '/things'
-      const data = {
-        name: this.nameField,
-        price: this.priceField,
-        owner: this.claims.email
-      }
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-          // Authorization: 'Bearer ' + this.accessToken
-        },
-        body: JSON.stringify(data)
-      }
-      fetch(endpoint, requestOptions)
-          .then(response => response.json())
-          .then(data => {
-            console.log('Success:', data)
           })
           .catch(error => console.log('error', error))
     }
