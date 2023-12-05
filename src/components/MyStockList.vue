@@ -13,7 +13,7 @@
 
 </template>
 
-<script>
+<script setup lang="ts">
 export default {
   name: 'StockList',
   data () {
