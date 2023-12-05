@@ -23,14 +23,16 @@ export default {
   },
   methods: {
     loadStocks () {
+      const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+      const endpoint = baseUrl + '/stocks'
       const requestOptions = {
         method: 'GET',
         redirect: 'follow'
       }
-      fetch(baseUrl + '/stocks', requestOptions)
+      fetch(endpoint, requestOptions)
           .then(response => response.json())
           .then(result => {
-            console.log(result),
+            console.log(result)
                 result.forEach(stock => {
                   this.stocks.push(stock)
                 })
