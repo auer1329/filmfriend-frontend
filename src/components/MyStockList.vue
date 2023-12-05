@@ -27,7 +27,7 @@ export default {
         method: 'GET',
         redirect: 'follow'
       }
-      fetch('http://localhost:8080/api/stocks', requestOptions)
+      fetch(baseUrl + '/stocks', requestOptions)
           .then(response => response.json())
           .then(result => {
             console.log(result),
