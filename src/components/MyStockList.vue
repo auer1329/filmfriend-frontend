@@ -14,36 +14,39 @@
 </template>
 
 <script setup lang="ts">
-export default {
-  name: 'StockList',
-  data () {
-    return {
-      stocks: []
-    }
-  },
-  methods: {
-    loadStocks () {
+import {onMounted, ref} from "vue";
+import type {Ref} from "vue";
+
+type Stock = {
+  id: number,
+  name: string,
+  brand: string,
+  description: string,
+  staticImageUrl: string
+}
+
+ const stocks: Ref<Stock[]> = ref([])
+
+ function loadStocks () {
       const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
       const endpoint = baseUrl + '/stocks'
-      const requestOptions = {
+      const requestOptions: RequestInit = {
         method: 'GET',
         redirect: 'follow'
       }
       fetch(endpoint, requestOptions)
           .then(response => response.json())
-          .then(result => {
-            console.log(result)
-                result.forEach(stock => {
-                  this.stocks.push(stock)
+          .then(result => { result.forEach((stock: Stock) => {
+                  stocks.value.push(stock)
                 })
           })
           .catch(error => console.log('error', error))
     }
-  },
-  mounted () {
-    this.loadStocks()
-  }
-}
+
+  onMounted(() => {
+    loadStocks()
+  })
+
 </script>
 
 <style scoped>
