@@ -1,11 +1,19 @@
 <template>
-  <div class="row row-cols-1 row-cols-md-4 g-4">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col" v-for="stock in stocks" :key="stock.id">
-      <div class="card">
-        <img :src=stock.staticImageUrl class="card-img-top" :alt="stock.name">
-        <div class="card-body">
-          <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
-          <p class="card-text">{{ stock.description }}</p>
+
+      <div class="card mb-3" style="max-width: 540px">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img :src=stock.staticImageUrl class="img-fluid rounded-start" :alt="stock.name">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+
+              <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
+              <p class="card-text">{{ stock.description }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
