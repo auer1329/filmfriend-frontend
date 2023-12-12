@@ -2,7 +2,13 @@
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div  class="card mb-3">
       <h5 class="card-title">Neue Kamera</h5>
-      Hier kommt ein Fomular für neue Kameras
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Neue Kamera <br>
+        hinzufügen
+      </button>
+      <!-- Modal -->
+      <FriendlyModal title="Neue Kamera" :modalContent=NewCameraForm submitText="Kamera hinzufügen" />
     </div>
     <div class="col" v-for="camera in cameras" :key="camera.id">
 
@@ -22,8 +28,10 @@
 </template>
 
 <script setup lang="ts">
+import type {Ref} from "vue"
 import {onMounted, ref} from "vue";
-import type {Ref} from "vue";
+import FriendlyModal from "@/components/FriendlyModal.vue";
+import NewCameraForm from "@/components/NewCameraForm.vue";
 
 type Camera = {
   id: number,
