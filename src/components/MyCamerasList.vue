@@ -16,7 +16,7 @@
           <input type="text" class="form-control" v-model="staticImageUrlField" placeholder="Bild">
           <br>
           <select class="form-select" id="formatSelection" required>
-            <option selected>Format auswählen</option>
+            <option value="1" selected disabled>Format auswählen</option>
             <option value="35">35mm</option>
             <option value="120">120mm</option>
           </select>
@@ -49,6 +49,7 @@ import {onMounted, ref} from "vue";
 import NewCameraModal from "@/components/NewCameraModal.vue";
 import type {Cameramodel} from "@/types";
 import axios, {type AxiosResponse} from "axios";
+import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 
 const nameField = ref('')
 const brandField = ref('')
@@ -63,8 +64,8 @@ async function save () {
     brand: brandField.value,
     model: modelField.value,
     staticImageUrl: staticImageUrlField.value,
-    formatThirtyFive:  document.getElementById("formatSelection").value === "35",
-    formatOneTwenty: document.getElementById("formatSelection").value === "120"
+    formatThirtyFive:  document.getElementById("formatSelection")?.value === "35",
+    formatOneTwenty: document.getElementById("formatSelection")?.value === "120"
   }
   const response: AxiosResponse = await axios.post(endpoint, data);
   const responseData: Cameramodel = response.data;
