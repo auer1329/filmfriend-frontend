@@ -1,0 +1,1 @@
+export type Cameramodel = { id?: number; name: string; brand: string; model: string; staticImageUrl: string; formatThirtyFive: boolean; formatOneTwenty: boolean}
