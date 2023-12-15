@@ -49,7 +49,6 @@ import {onMounted, ref} from "vue";
 import NewCameraModal from "@/components/NewCameraModal.vue";
 import type {Cameramodel} from "@/types";
 import axios, {type AxiosResponse} from "axios";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 
 const nameField = ref('')
 const brandField = ref('')
