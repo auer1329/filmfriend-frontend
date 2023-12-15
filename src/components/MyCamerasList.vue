@@ -63,8 +63,8 @@ async function save () {
     brand: brandField.value,
     model: modelField.value,
     staticImageUrl: staticImageUrlField.value,
-    formatThirtyFive:  document.getElementById("formatSelection")?.value === "35",
-    formatOneTwenty: document.getElementById("formatSelection")?.value === "120"
+    formatThirtyFive:  document.getElementById("formatSelection")?.nodeValue === "35",
+    formatOneTwenty: document.getElementById("formatSelection")?.nodeValue === "120"
   }
   const response: AxiosResponse = await axios.post(endpoint, data);
   const responseData: Cameramodel = response.data;
