@@ -31,12 +31,20 @@
       <div class="card " style="max-width: 540px">
         <img :src=camera.staticImageUrl class="card-image-top rounded-start" :alt="camera.name" >
         <div class="card-body">
-            <h5 class="card-title">{{ camera.name }}</h5>
-            <div class="card-text">
-              {{ camera.brand }} {{ camera.model }}  <br>
-              <div v-if="camera.formatThirtyFive">Format: 35mm</div>
-              <div v-if="camera.formatOneTwenty">Format: 120mm</div>
+          <h5 class="card-title">{{ camera.name }}</h5>
+          <div class="card-text">
+            {{ camera.brand }} {{ camera.model }}  <br>
+            <div v-if="camera.formatThirtyFive">Format: 35mm</div>
+            <div v-if="camera.formatOneTwenty">Format: 120mm</div>
+          </div>
+          <div class="card-text">
+            <div v-if="camera.roll != null">
+              <br>
+              <img :src=camera.roll.stock.staticImageUrl :alt=camera.roll.stock.name width="50" height="50"><br>
+              <b>eingelegter Film:</b><br>
+              {{ camera.roll.stock.name }} {{ camera.roll.stock.brand }} (ISO: {{ camera.roll.stock.iso }}) <br>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -64,7 +72,7 @@ async function save () {
     model: modelField.value,
     staticImageUrl: staticImageUrlField.value,
     formatThirtyFive:  document.getElementById("formatSelection")?.nodeValue === "35",
-    formatOneTwenty: document.getElementById("formatSelection")?.nodeValue === "120"
+    formatOneTwenty: document.getElementById("formatSelection")?.nodeValue === "120",
   }
   const response: AxiosResponse = await axios.post(endpoint, data);
   const responseData: Cameramodel = response.data;
@@ -81,39 +89,57 @@ type Camera = {
   staticImageUrl: string,
   formatThirtyFive: boolean,
   formatOneTwenty: boolean
+  roll: {
+    id: number,
+    stock: {
+      id: number,
+      brand: string,
+      name: string,
+      iso: number,
+      formatThirtyFive: boolean,
+      formatOneTwenty: boolean
+      color: boolean,
+      process: string,
+      staticImageUrl: string
+      description: string
+    },
+    expectedPickupDate: string,
+    usedIso: number
+  }
 }
 
-  const cameras: Ref<Camera[]> = ref([])
+const cameras: Ref<Camera[]> = ref([])
 
-  function loadCameras (){
-    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
-    const endpoint = baseUrl + '/cameramodel'
-    const requestOptions: RequestInit = {
-      method:'GET',
-      redirect: 'follow'
-    }
-    fetch(endpoint, requestOptions)
-    .then(response => response.json())
-    .then(
-      result => {
-        result.forEach(
-          (cameramodel: Camera) => {
-            console.log(cameramodel)
-            cameras.value.push(cameramodel)
-          }
-        )
-      }
-    )
-    .catch(error => console.log('error', error))
+function loadCameras (){
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/cameramodel'
+  const requestOptions: RequestInit = {
+    method:'GET',
+    redirect: 'follow'
   }
+  fetch(endpoint, requestOptions)
+      .then(response => response.json())
+      .then(
+          result => {
+            result.forEach(
+                (cameramodel: Camera) => {
+                  console.log(cameramodel)
+                  cameras.value.push(cameramodel)
+                }
+            )
+          }
+      )
+      .catch(error => console.log('error', error))
+}
 
-  onMounted(() => {
-    loadCameras()
-  })
+onMounted(() => {
+  loadCameras()
+})
 
 </script>
 
 <style scoped>
 
 </style>
+
 
