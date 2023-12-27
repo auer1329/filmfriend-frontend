@@ -46,7 +46,8 @@
             </div>
             <div v-else>
               <br>
-              <b>kein Film eingelegt</b>
+              <b>kein Film eingelegt</b><br>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCameraModal">Film einlegen</button>
               </div>
           </div>
         </div>
