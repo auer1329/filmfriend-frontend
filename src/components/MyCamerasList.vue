@@ -44,6 +44,10 @@
               <b>eingelegter Film:</b><br>
               {{ camera.roll.stock.name }} {{ camera.roll.stock.brand }} (ISO: {{ camera.roll.stock.iso }}) <br>
             </div>
+            <div v-else>
+              <br>
+              <b>kein Film eingelegt</b>
+              </div>
           </div>
         </div>
       </div>
