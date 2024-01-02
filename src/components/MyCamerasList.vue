@@ -120,6 +120,15 @@ async function insertRoll() {
   location.reload();
 }
 
+async function deleteCamera(cameraId: number) {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/cameramodel/' + cameraId
+  console.log(endpoint)
+  const responseData: Cameramodel = await axios.delete(endpoint);
+  console.log('Success: ', responseData);
+  location.reload();
+}
+
 async function removeRoll(cameraId: number) {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/roll/' + cameraId
