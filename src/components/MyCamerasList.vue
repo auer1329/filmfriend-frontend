@@ -48,7 +48,7 @@
             <div v-else>
               <br>
               <b>kein Film eingelegt</b><br>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal" @click="prepareInsert(camera.id)">Film einlegen</button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal" @click="prepareCamera(camera.id)">Film einlegen</button>
               </div>
           </div>
         </div>
@@ -107,7 +107,8 @@ async function save () {
   location.reload();
 }
 
-function prepareInsert(cameraId: number) {
+// this serves as a callback for the modal submit button
+function prepareCamera(cameraId: number) {
   selectedCameraId.value = cameraId
 }
 
