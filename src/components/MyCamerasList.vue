@@ -137,24 +137,32 @@ type Camera = {
   staticImageUrl: string,
   formatThirtyFive: boolean,
   formatOneTwenty: boolean
-  roll: {
-    id: number,
-    stock: {
-      id: number,
-      brand: string,
-      name: string,
-      iso: number,
-      formatThirtyFive: boolean,
-      formatOneTwenty: boolean
-      color: boolean,
-      process: string,
-      staticImageUrl: string
-      description: string
-    },
-    expectedPickupDate: string,
-    usedIso: number
-  }
+  roll: Roll
 }
+
+type Roll = {
+  id: number,
+  stock: Stock,
+  expectedPickupDate: string,
+  usedIso: number,
+  labName: string,
+  notes: String
+}
+
+type Stock = {
+  id: number,
+  name: string,
+  brand: string,
+  description: string,
+  staticImageUrl: string,
+  iso: number,
+  formatThirtyFive: boolean,
+  formatOneTwenty: boolean,
+  color: boolean,
+  process: string
+}
+
+
 
 const cameras: Ref<Camera[]> = ref([])
 
