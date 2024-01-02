@@ -37,18 +37,22 @@
             <div v-if="camera.formatThirtyFive">Format: 35mm</div>
             <div v-if="camera.formatOneTwenty">Format: 120mm</div>
           </div>
+          <div>
+            <button type ="button" class="btn btn-primary" @click="deleteCamera(camera.id)">Kamera löschen</button>
+          </div>
           <div class="card-text">
             <div v-if="camera.roll != null">
               <br>
               <img :src=camera.roll.stock.staticImageUrl :alt=camera.roll.stock.name width="50" height="50"><br>
               <b>eingelegter Film:</b><br>
               {{ camera.roll.stock.name }} {{ camera.roll.stock.brand }} (ISO: {{ camera.roll.stock.iso }}) <br>
+              <button type="button" class="btn btn-primary" style="margin:5px" data-bs-toggle="modal" data-bs-target="#developModal" @click="prepareCamera(camera.id)">Film entwickeln</button>
               <button type="button" class="btn btn-primary" @click=removeRoll(camera.id)>Film entfernen</button>
             </div>
             <div v-else>
               <br>
               <b>kein Film eingelegt</b><br>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal" @click="prepareInsert(camera.id)">Film einlegen</button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal" @click="prepareCamera(camera.id)">Film einlegen</button>
               </div>
           </div>
         </div>
@@ -73,6 +77,29 @@
       </div>
     </div>
   </div>
+<!-- Develop Modal -->
+  <div class="modal fade" id="developModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Film entwickeln</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input placeholder="Lab Name" v-model="labNameField"> <br>
+          <input placeholder="Used ISO" v-model="usedIsoField"><br>
+          <input type="date" placeholder="Expected Pickup Date" v-model="expectedPickupDateField"><br>
+          <input placeholder="Notes" v-model="notesField">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary"  data-bs-dismiss="modal" @click="developRoll()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </template>
 
 <script setup lang="ts">
@@ -88,6 +115,12 @@ const staticImageUrlField = ref('')
 
 const selectedCameraId = ref(0)
 const selectedStockId = ref(0)
+
+const labNameField = ref('')
+const usedIsoField = ref(0)
+const expectedPickupDateField = ref('')
+const notesField = ref('')
+
 
 async function save () {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
@@ -107,7 +140,8 @@ async function save () {
   location.reload();
 }
 
-function prepareInsert(cameraId: number) {
+// this serves as a callback for the modal submit button
+function prepareCamera(cameraId: number) {
   selectedCameraId.value = cameraId
 }
 
@@ -116,6 +150,15 @@ async function insertRoll() {
   const endpoint = baseUrl + '/roll?cameraId=' + selectedCameraId.value + '&stockId=' + selectedStockId.value
   console.log(endpoint)
   const responseData: Cameramodel = await axios.post(endpoint);
+  console.log('Success: ', responseData);
+  location.reload();
+}
+
+async function deleteCamera(cameraId: number) {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/cameramodel/' + cameraId
+  console.log(endpoint)
+  const responseData: Cameramodel = await axios.delete(endpoint);
   console.log('Success: ', responseData);
   location.reload();
 }
@@ -129,6 +172,20 @@ async function removeRoll(cameraId: number) {
   location.reload();
 }
 
+async function developRoll() {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/roll?cameraId=' + selectedCameraId.value
+      + '&stockId=' + selectedStockId.value
+      + '&labName=' + labNameField.value
+      + '&usedIso=' + usedIsoField.value
+      + '&expectedPickupDate=' + expectedPickupDateField.value
+      + '&notes=' + notesField.value
+  console.log(endpoint)
+  const responseData: Cameramodel = await axios.put(endpoint);
+  console.log('Success: ', responseData);
+  location.reload();
+}
+
 type Camera = {
   id: number,
   name: string,
@@ -137,24 +194,32 @@ type Camera = {
   staticImageUrl: string,
   formatThirtyFive: boolean,
   formatOneTwenty: boolean
-  roll: {
-    id: number,
-    stock: {
-      id: number,
-      brand: string,
-      name: string,
-      iso: number,
-      formatThirtyFive: boolean,
-      formatOneTwenty: boolean
-      color: boolean,
-      process: string,
-      staticImageUrl: string
-      description: string
-    },
-    expectedPickupDate: string,
-    usedIso: number
-  }
+  roll: Roll
 }
+
+type Roll = {
+  id: number,
+  stock: Stock,
+  expectedPickupDate: string,
+  usedIso: number,
+  labName: string,
+  notes: String
+}
+
+type Stock = {
+  id: number,
+  name: string,
+  brand: string,
+  description: string,
+  staticImageUrl: string,
+  iso: number,
+  formatThirtyFive: boolean,
+  formatOneTwenty: boolean,
+  color: boolean,
+  process: string
+}
+
+
 
 const cameras: Ref<Camera[]> = ref([])
 
