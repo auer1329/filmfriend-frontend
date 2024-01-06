@@ -134,7 +134,7 @@ const selectedCameraId = ref(0)
 const selectedStockId = ref(0)
 
 const labNameField = ref('')
-const usedIsoField = ref(0)
+const usedIsoField = ref(undefined)
 const expectedPickupDateField = ref('')
 const notesField = ref('')
 
