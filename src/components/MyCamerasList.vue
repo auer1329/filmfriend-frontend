@@ -177,7 +177,7 @@ async function deleteCamera(cameraId: number) {
 
 async function removeRoll(cameraId: number) {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
-  const endpoint = baseUrl + '/roll/' + cameraId
+  const endpoint = baseUrl + '/roll?cameraId=' + cameraId
   console.log(endpoint)
   const responseData: Cameramodel = await axios.delete(endpoint);
   console.log('Success: ', responseData);
