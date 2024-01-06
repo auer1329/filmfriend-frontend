@@ -30,6 +30,7 @@
                   </tr>
                 </tbody>
               </table>
+              <button type="button" class="btn btn-primary" @click="deleteRoll(roll.id)">Löschen</button>
             </div>
           </div>
         </div>
@@ -42,6 +43,8 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
+import type {Cameramodel} from "@/types";
+import axios from "axios";
 
 type Roll = {
   id: number,
@@ -88,6 +91,15 @@ function countToPickup(roll: Roll) {
   const pickupDate = new Date(roll.expectedPickupDate)
   const diff = pickupDate.getTime() - today.getTime()
   return Math.ceil(diff / (1000 * 3600 * 24))
+}
+
+async function deleteRoll(rollId: number) {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/roll?rollId=' + rollId
+  console.log(endpoint)
+  const responseData: Cameramodel = await axios.delete(endpoint);
+  console.log('Success: ', responseData);
+  location.reload();
 }
 
 onMounted(() => {
