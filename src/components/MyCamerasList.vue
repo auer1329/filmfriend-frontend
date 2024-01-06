@@ -24,7 +24,8 @@
                 <img :src=camera.roll.stock.staticImageUrl :alt=camera.roll.stock.name width="80" height="80">
               </div>
               <div class="col">
-                {{ camera.roll.stock.name }} {{ camera.roll.stock.brand }} (ISO: {{ camera.roll.stock.iso }})<br>
+                {{ camera.roll.stock.brand }} {{ camera.roll.stock.name }}<br>
+                ISO {{ camera.roll.stock.iso }}
               </div>
             </div>
             <div class="d-grid ">
