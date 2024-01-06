@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCameraModal">Neue Kamera hinzufügen</button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" style="margin-bottom: 0px; float: right" data-bs-target="#newCameraModal">Neue Kamera hinzufügen</button>
   <div class="row row-cols-1 row-cols-md-3 g-4">
 
     <div class="col" v-for="camera in cameras" :key="camera.id">
