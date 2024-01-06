@@ -1,7 +1,9 @@
 <template>
+  <form class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2" style="margin-bottom: 20px" type="search" v-model="searchField" placeholder="Search" aria-label="Search">
+  </form>
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col" v-for="stock in stocks" :key="stock.id">
-
+    <div class="col" v-for="stock in filterStocks()" :key="stock.id">
       <div class="card mb-3" style="max-width: 540px">
         <div class="row g-0">
           <div class="col-md-4">
@@ -9,7 +11,6 @@
           </div>
           <div class="col-md-8">
             <div class="card-body">
-
               <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
               <p class="card-text">{{ stock.description }}</p>
             </div>
@@ -33,7 +34,8 @@ type Stock = {
   staticImageUrl: string
 }
 
- const stocks: Ref<Stock[]> = ref([])
+const stocks: Ref<Stock[]> = ref([])
+const searchField: Ref<string> = ref('')
 
  function loadStocks () {
       const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
@@ -55,6 +57,19 @@ type Stock = {
     loadStocks()
   })
 
+function filterStocks() {
+  const searchTerm = searchField.value.toLowerCase()
+  if (searchTerm === '') {
+    return stocks.value
+  }
+  const filteredStocks: Stock[] = []
+  stocks.value.forEach((stock: Stock) => {
+    if (stock.name.toLowerCase().includes(searchTerm) || stock.brand.toLowerCase().includes(searchTerm) || stock.description.toLowerCase().includes(searchTerm)) {
+      filteredStocks.push(stock)
+    }
+  })
+  return filteredStocks
+}
 </script>
 
 <style scoped>
