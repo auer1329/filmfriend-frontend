@@ -3,6 +3,7 @@
     <div class="col" v-for="roll in rolls" :key="roll.id">
 
       <div class="card mb-3" style="max-width: 540px">
+        <button type="button" class="btn-close overlap-close" @click="deleteRoll(roll.id)" aria-label="Close"></button>
         <div class="row g-0">
           <div class="col-md-4">
             <img :src=roll.stock.staticImageUrl class="img-fluid rounded-start" :alt="roll.stock.name">
@@ -30,7 +31,6 @@
                   </tr>
                 </tbody>
               </table>
-              <button type="button" class="btn btn-primary" @click="deleteRoll(roll.id)">Löschen</button>
             </div>
           </div>
         </div>
@@ -109,4 +109,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+
 </style>

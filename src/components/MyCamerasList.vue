@@ -1,34 +1,10 @@
 <template>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCameraModal">Neue Kamera hinzufügen</button>
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div  class="card mb-3">
-      <br>
-      <h5 class="card-title">Neue Kamera</h5>
-
-      <form>
-        <div>
-          <br>
-          <input type="text" class="form-control" v-model="nameField" placeholder="Kameraname" required>
-          <br>
-          <input type="text" class="form-control" v-model="brandField" placeholder="Marke" required>
-          <br>
-          <input type="text" class="form-control" v-model="modelField" placeholder="Modell" required>
-          <br>
-          <input type="text" class="form-control" v-model="staticImageUrlField" placeholder="Bild">
-          <br>
-          <select class="form-select" id="formatSelection" required>
-            <option value="1" selected disabled>Format auswählen</option>
-            <option value="35">35mm</option>
-            <option value="120">120mm</option>
-          </select>
-          <br>
-        </div>
-      </form>
-      <button type="button" class="btn btn-primary" @click="save()">Kamera hinzufügen</button>
-      <br>
-    </div>
 
     <div class="col" v-for="camera in cameras" :key="camera.id">
-      <div class="card " style="max-width: 540px">
+      <div class="card ">
+        <button type="button" class="btn-close overlap-close" @click="deleteCamera(camera.id)" aria-label="Close"></button>
         <img :src=camera.staticImageUrl class="card-image-top rounded-start" :alt="camera.name" >
         <div class="card-body">
           <h5 class="card-title">{{ camera.name }}</h5>
@@ -38,7 +14,7 @@
             <div v-if="camera.formatOneTwenty">Format: 120mm</div>
           </div>
           <div>
-            <button type ="button" class="btn btn-primary" @click="deleteCamera(camera.id)">Kamera löschen</button>
+
           </div>
           <div class="card-text">
             <div v-if="camera.roll != null">
@@ -111,6 +87,42 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary"  data-bs-dismiss="modal" @click="developRoll()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- New Camera Modal -->
+  <div class="modal fade" id="newCameraModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Neue Kamera hinzufügen</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+              <div>
+                <br>
+                <input type="text" class="form-control" v-model="nameField" placeholder="Kameraname" required>
+                <br>
+                <input type="text" class="form-control" v-model="brandField" placeholder="Marke" required>
+                <br>
+                <input type="text" class="form-control" v-model="modelField" placeholder="Modell" required>
+                <br>
+                <input type="text" class="form-control" v-model="staticImageUrlField" placeholder="Bild">
+                <br>
+                <select class="form-select" id="formatSelection" required>
+                  <option value="1" selected disabled>Format auswählen</option>
+                  <option value="35">35mm</option>
+                  <option value="120">120mm</option>
+                </select>
+                <br>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" @click="save()">Kamera hinzufügen</button>
         </div>
       </div>
     </div>
