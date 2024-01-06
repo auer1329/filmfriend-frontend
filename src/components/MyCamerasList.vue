@@ -46,13 +46,13 @@
               <img :src=camera.roll.stock.staticImageUrl :alt=camera.roll.stock.name width="50" height="50"><br>
               <b>eingelegter Film:</b><br>
               {{ camera.roll.stock.name }} {{ camera.roll.stock.brand }} (ISO: {{ camera.roll.stock.iso }}) <br>
-              <button type="button" class="btn btn-primary" style="margin:5px" data-bs-toggle="modal" data-bs-target="#developModal" @click="prepareCamera(camera.id)">Film entwickeln</button>
+              <button type="button" class="btn btn-primary" style="margin:5px" data-bs-toggle="modal" data-bs-target="#developModal" @click="selectedCameraId = camera.id">Film entwickeln</button>
               <button type="button" class="btn btn-primary" @click=removeRoll(camera.id)>Film entfernen</button>
             </div>
             <div v-else>
               <br>
               <b>kein Film eingelegt</b><br>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal" @click="prepareCamera(camera.id)">Film einlegen</button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal" @click="selectedCameraId = camera.id; loadStocks()">Film einlegen</button>
               </div>
           </div>
         </div>
@@ -68,11 +68,28 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input placeholder="StockID" v-model="selectedStockId">
-        </div>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" style="margin-bottom: 20px" type="search" v-model="searchField" placeholder="Search" aria-label="Search">
+          </form>
+          <div class="row row-cols-1 g-4">
+            <div class="col" v-for="stock in filterStocks()" :key="stock.id">
+              <div class="card mb-3" style="max-width: 540px">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img :src=stock.staticImageUrl class="img-fluid rounded-start" :alt="stock.name">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="selectedStockId = stock.id; insertRoll()">Diesen Film einlegen</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary"  data-bs-dismiss="modal" @click="insertRoll()">Save changes</button>
         </div>
       </div>
     </div>
@@ -140,11 +157,6 @@ async function save () {
   location.reload();
 }
 
-// this serves as a callback for the modal submit button
-function prepareCamera(cameraId: number) {
-  selectedCameraId.value = cameraId
-}
-
 async function insertRoll() {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/roll?cameraId=' + selectedCameraId.value + '&stockId=' + selectedStockId.value
@@ -186,6 +198,20 @@ async function developRoll() {
   location.reload();
 }
 
+function filterStocks() {
+  const searchTerm = searchField.value.toLowerCase()
+  if (searchTerm === '') {
+    return stocks.value
+  }
+  const filteredStocks: Stock[] = []
+  stocks.value.forEach((stock: Stock) => {
+    if (stock.name.toLowerCase().includes(searchTerm) || stock.brand.toLowerCase().includes(searchTerm) || stock.description.toLowerCase().includes(searchTerm)) {
+      filteredStocks.push(stock)
+    }
+  })
+  return filteredStocks
+}
+
 type Camera = {
   id: number,
   name: string,
@@ -222,6 +248,8 @@ type Stock = {
 
 
 const cameras: Ref<Camera[]> = ref([])
+const stocks: Ref<Stock[]> = ref([])
+const searchField: Ref<string> = ref('')
 
 function loadCameras (){
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
@@ -242,6 +270,22 @@ function loadCameras (){
             )
           }
       )
+      .catch(error => console.log('error', error))
+}
+
+function loadStocks () {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/stocks'
+  const requestOptions: RequestInit = {
+    method: 'GET',
+    redirect: 'follow'
+  }
+  fetch(endpoint, requestOptions)
+      .then(response => response.json())
+      .then(result => { result.forEach((stock: Stock) => {
+        stocks.value.push(stock)
+      })
+      })
       .catch(error => console.log('error', error))
 }
 
