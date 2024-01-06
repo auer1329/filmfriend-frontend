@@ -31,7 +31,7 @@
       <div class="card " style="max-width: 540px">
         <img :src=camera.staticImageUrl class="card-image-top rounded-start" :alt="camera.name" >
         <div class="card-body">
-          <h5 class="card-title">{{ camera.name }} ({{ camera.id }})</h5>
+          <h5 class="card-title">{{ camera.name }}</h5>
           <div class="card-text">
             {{ camera.brand }} {{ camera.model }}<br>
             <div v-if="camera.formatThirtyFive">Format: 35mm</div>
