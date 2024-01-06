@@ -3,6 +3,7 @@
     <div class="col" v-for="roll in rolls" :key="roll.id">
 
       <div class="card mb-3" style="max-width: 540px">
+        <button type="button" class="btn-close overlap-close" @click="deleteRoll(roll.id)" aria-label="Close"></button>
         <div class="row g-0">
           <div class="col-md-4">
             <img :src=roll.stock.staticImageUrl class="img-fluid rounded-start" :alt="roll.stock.name">
@@ -42,6 +43,8 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
+import type {Cameramodel} from "@/types";
+import axios from "axios";
 
 type Roll = {
   id: number,
@@ -90,6 +93,15 @@ function countToPickup(roll: Roll) {
   return Math.ceil(diff / (1000 * 3600 * 24))
 }
 
+async function deleteRoll(rollId: number) {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/roll?rollId=' + rollId
+  console.log(endpoint)
+  const responseData: Cameramodel = await axios.delete(endpoint);
+  console.log('Success: ', responseData);
+  location.reload();
+}
+
 onMounted(() => {
   loadRollsInDevelopment()
 })
@@ -97,4 +109,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+
 </style>

@@ -13,8 +13,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <RouterLink class = "nav-link" to="/">Startseite</RouterLink>
-          <RouterLink class = "nav-link" to="/kameras">Kameras</RouterLink>
+          <RouterLink class = "nav-link" to="/">Kameras</RouterLink>
           <RouterLink class = "nav-link" to="/filmvorrat">Filmvorrat</RouterLink>
           <RouterLink class = "nav-link" to="/develop">in Entwicklung</RouterLink>
         </div>
