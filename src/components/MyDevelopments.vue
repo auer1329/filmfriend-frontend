@@ -44,7 +44,7 @@
 import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
 import type {Cameramodel} from "@/types";
-import axios from "axios";
+import axios, {type AxiosResponse} from "axios";
 
 type Roll = {
   id: number,
@@ -70,20 +70,14 @@ type Stock = {
 
 const rolls: Ref<Roll[]> = ref([])
 
-function loadRollsInDevelopment () {
+async function loadRollsInDevelopment () {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/roll/in-development'
-  const requestOptions: RequestInit = {
-    method: 'GET',
-    redirect: 'follow'
-  }
-  fetch(endpoint, requestOptions)
-      .then(response => response.json())
-      .then(result => { result.forEach((roll: Roll) => {
-        rolls.value.push(roll)
-      })
-      })
-      .catch(error => console.log('error', error))
+  const response: AxiosResponse = await axios.get(endpoint);
+  const responseData: Roll[] = response.data;
+  responseData.forEach((roll: Roll) => {
+    rolls.value.push(roll)
+  })
 }
 
 function countToPickup(roll: Roll) {
