@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-primary" id="newCameraButtn" data-bs-toggle="modal" style="margin-bottom: 0px; float: right"
+  <button type="button" class="btn btn-primary" id="newCameraBttn" data-bs-toggle="modal" style="margin-bottom: 0px; float: right"
           data-bs-target="#newCameraModal">Neue Kamera hinzufügen
   </button>
   <div class="row row-cols-1 row-cols-md-3 g-4">
