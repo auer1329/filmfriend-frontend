@@ -23,8 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
+import {onMounted, ref} from "vue";
+import axios from "axios";
 
 type Stock = {
   id: number,
@@ -37,25 +38,16 @@ type Stock = {
 const stocks: Ref<Stock[]> = ref([])
 const searchField: Ref<string> = ref('')
 
- function loadStocks () {
-      const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
-      const endpoint = baseUrl + '/stocks'
-      const requestOptions: RequestInit = {
-        method: 'GET',
-        redirect: 'follow'
-      }
-      fetch(endpoint, requestOptions)
-          .then(response => response.json())
-          .then(result => { result.forEach((stock: Stock) => {
-                  stocks.value.push(stock)
-                })
-          })
-          .catch(error => console.log('error', error))
-    }
+async function loadStocks () {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  const endpoint = baseUrl + '/stocks'
+  const response = axios.get(endpoint)
+  stocks.value = (await response).data
+}
 
-  onMounted(() => {
-    loadStocks()
-  })
+onMounted(() => {
+  loadStocks()
+})
 
 function filterStocks() {
   const searchTerm = searchField.value.toLowerCase()
