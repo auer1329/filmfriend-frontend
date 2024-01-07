@@ -309,43 +309,28 @@ const cameras: Ref<Camera[]> = ref([])
 const stocks: Ref<Stock[]> = ref([])
 const searchField: Ref<string> = ref('')
 
-function loadCameras() {
+async function loadCameras() {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/cameramodel'
-  const requestOptions: RequestInit = {
-    method: 'GET',
-    redirect: 'follow'
-  }
-  fetch(endpoint, requestOptions)
-      .then(response => response.json())
-      .then(
-          result => {
-            result.forEach(
-                (cameramodel: Camera) => {
-                  console.log(cameramodel)
-                  cameras.value.push(cameramodel)
-                }
-            )
-          }
-      )
-      .catch(error => console.log('error', error))
+  const response: AxiosResponse = await axios.get(endpoint);
+  const responseData: Camera[] = response.data;
+  responseData.forEach(
+      (cameramodel: Camera) => {
+        cameras.value.push(cameramodel)
+      }
+  )
 }
 
-function loadStocks() {
+async function loadStocks() {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/stocks'
-  const requestOptions: RequestInit = {
-    method: 'GET',
-    redirect: 'follow'
-  }
-  fetch(endpoint, requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        result.forEach((stock: Stock) => {
-          stocks.value.push(stock)
-        })
-      })
-      .catch(error => console.log('error', error))
+  const response: AxiosResponse = await axios.get(endpoint);
+  const responseData: Stock[] = response.data;
+  responseData.forEach(
+      (stock: Stock) => {
+        stocks.value.push(stock)
+      }
+  )
 }
 
 onMounted(() => {
