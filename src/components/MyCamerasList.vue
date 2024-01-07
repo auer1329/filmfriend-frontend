@@ -1,12 +1,12 @@
 <template>
-  <button type="button" class="btn btn-primary" id="newCameraBttn" data-bs-toggle="modal" style="margin-bottom: 0px; float: right"
+  <button type="button" class="btn btn-primary" id="newCameraBttn" data-bs-toggle="modal"
+          style="margin-bottom: 0px; float: right"
           data-bs-target="#newCameraModal">Neue Kamera hinzufügen
   </button>
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col" v-for="camera in cameras" :key="camera.id">
       <div class="card ">
-        <button type="button" class="btn-close overlap-close" @click="deleteCamera(camera.id)"
-                aria-label="Close"></button>
+        <button type="button" class="btn-close overlap-close" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" @click="selectedCameraId = camera.id" aria-label="löschen"></button>
         <img :src=camera.staticImageUrl class="card-image-top rounded-start" :alt="camera.name">
         <div class="card-body">
           <h5 class="card-title">{{ camera.name }}</h5>
@@ -33,14 +33,16 @@
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                         data-bs-target="#developModal" @click="selectedCameraId = camera.id">Film entwickeln
                 </button>
-                <button type="button" class="btn btn-outline-primary" @click=removeRoll(camera.id)>Film entfernen</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#confirmRemoveModal" @click="selectedCameraId = camera.id">Film entfernen
+                </button>
               </div>
             </div>
           </div>
           <div v-else>
             <div class="d-grid" style="margin-top: 1em">
-              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#stockSelectionModal"
-                      @click="selectedCameraId = camera.id; loadStocks()">Film einlegen
+              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                      data-bs-target="#stockSelectionModal"
+                      @click="selectedCameraId = camera.id">Film einlegen
               </button>
             </div>
           </div>
@@ -145,8 +147,34 @@
       </div>
     </div>
   </div>
-
-
+  <!--confirm delete modal-->
+  <div class="modal fade" id="confirmDeleteModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Löschen bestätigen</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-danger" @click="deleteCamera(selectedCameraId)">Löschen bestätigen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- confirm remove modal -->
+  <div class="modal fade" id="confirmRemoveModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Film entfernen bestätigen</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-danger" @click="removeRoll(selectedCameraId)">Entfernen</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
