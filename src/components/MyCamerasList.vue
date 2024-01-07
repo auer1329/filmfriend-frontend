@@ -197,6 +197,7 @@ async function insertRoll() {
 }
 
 async function deleteCamera(cameraId: number) {
+  removeRoll(cameraId)
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/cameramodel/' + cameraId
   console.log(endpoint)
