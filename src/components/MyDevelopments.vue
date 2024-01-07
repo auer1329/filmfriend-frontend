@@ -1,4 +1,7 @@
 <template>
+  <div v-if="isLoading">
+    <LoadingScreen/>
+  </div>
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col" v-for="roll in rolls" :key="roll.id">
 
@@ -45,6 +48,7 @@ import {onMounted, ref} from "vue";
 import type {Ref} from "vue";
 import type {Cameramodel} from "@/types";
 import axios, {type AxiosResponse} from "axios";
+import LoadingScreen from "@/components/LoadingScreen.vue";
 
 type Roll = {
   id: number,
@@ -69,15 +73,20 @@ type Stock = {
 }
 
 const rolls: Ref<Roll[]> = ref([])
+const isLoading = ref(false)
 
 async function loadRollsInDevelopment () {
+  isLoading.value = true
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/roll/in-development'
-  const response: AxiosResponse = await axios.get(endpoint);
-  const responseData: Roll[] = response.data;
-  responseData.forEach((roll: Roll) => {
-    rolls.value.push(roll)
-  })
+  try {
+    const response = await axios.get(endpoint)
+    rolls.value = response.data
+  } catch (e) {
+    console.log(e)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 function countToPickup(roll: Roll) {

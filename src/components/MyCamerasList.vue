@@ -1,52 +1,57 @@
 <template>
-  <button type="button" class="btn btn-primary" id="newCameraBttn" data-bs-toggle="modal"
-          style="margin-bottom: 0px; float: right"
-          data-bs-target="#newCameraModal">Neue Kamera hinzufügen
-  </button>
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col" v-for="camera in cameras" :key="camera.id">
-      <div class="card ">
-        <button type="button" class="btn-close overlap-close" data-bs-toggle="modal"
-                data-bs-target="#confirmDeleteModal" @click="selectedCameraId = camera.id"
-                aria-label="löschen"></button>
-        <img :src=camera.staticImageUrl class="card-image-top rounded-start" :alt="camera.name">
-        <div class="card-body">
-          <h5 class="card-title">{{ camera.name }}</h5>
-          <div class="card-text">
-            {{ camera.brand }} {{ camera.model }}<br>
-            <div v-if="camera.formatThirtyFive">Format: 35mm</div>
-            <div v-if="camera.formatOneTwenty">Format: 120mm</div>
-          </div>
-          <div v-if="camera.roll != null">
-            <h5 style="margin-top: 1em">
-              Eingelegter Film
-            </h5>
-            <div class="row g-0" style="margin-bottom: 1em">
-              <div class="col-md-3">
-                <img :src=camera.roll.stock.staticImageUrl :alt=camera.roll.stock.name width="80" height="80">
+  <div v-if="isLoading">
+    <LoadingScreen/>
+  </div>
+  <div v-else>
+    <button type="button" class="btn btn-primary" id="newCameraBttn" data-bs-toggle="modal"
+            style="margin-bottom: 0px; float: right"
+            data-bs-target="#newCameraModal">Neue Kamera hinzufügen
+    </button>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="col" v-for="camera in cameras" :key="camera.id">
+        <div class="card ">
+          <button type="button" class="btn-close overlap-close" data-bs-toggle="modal"
+                  data-bs-target="#confirmDeleteModal" @click="selectedCameraId = camera.id"
+                  aria-label="löschen"></button>
+          <img :src=camera.staticImageUrl class="card-image-top rounded-start" :alt="camera.name">
+          <div class="card-body">
+            <h5 class="card-title">{{ camera.name }}</h5>
+            <div class="card-text">
+              {{ camera.brand }} {{ camera.model }}<br>
+              <div v-if="camera.formatThirtyFive">Format: 35mm</div>
+              <div v-if="camera.formatOneTwenty">Format: 120mm</div>
+            </div>
+            <div v-if="camera.roll != null">
+              <h5 style="margin-top: 1em">
+                Eingelegter Film
+              </h5>
+              <div class="row g-0" style="margin-bottom: 1em">
+                <div class="col-md-3">
+                  <img :src=camera.roll.stock.staticImageUrl :alt=camera.roll.stock.name width="80" height="80">
+                </div>
+                <div class="col">
+                  {{ camera.roll.stock.brand }} {{ camera.roll.stock.name }}<br>
+                  ISO {{ camera.roll.stock.iso }}
+                </div>
               </div>
-              <div class="col">
-                {{ camera.roll.stock.brand }} {{ camera.roll.stock.name }}<br>
-                ISO {{ camera.roll.stock.iso }}
+              <div class="d-grid ">
+                <div class="btn-group gap-1" role="group" aria-label="process film">
+                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                          data-bs-target="#developModal" @click="selectedCameraId = camera.id">Film entwickeln
+                  </button>
+                  <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                          data-bs-target="#confirmRemoveModal" @click="selectedCameraId = camera.id">Film entfernen
+                  </button>
+                </div>
               </div>
             </div>
-            <div class="d-grid ">
-              <div class="btn-group gap-1" role="group" aria-label="process film">
+            <div v-else>
+              <div class="d-grid" style="margin-top: 1em">
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#developModal" @click="selectedCameraId = camera.id">Film entwickeln
-                </button>
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                        data-bs-target="#confirmRemoveModal" @click="selectedCameraId = camera.id">Film entfernen
+                        data-bs-target="#stockSelectionModal"
+                        @click="selectedCameraId = camera.id">Film einlegen
                 </button>
               </div>
-            </div>
-          </div>
-          <div v-else>
-            <div class="d-grid" style="margin-top: 1em">
-              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                      data-bs-target="#stockSelectionModal"
-                      @click="selectedCameraId = camera.id">Film einlegen
-              </button>
             </div>
           </div>
         </div>
@@ -186,6 +191,9 @@ import type {Ref} from "vue"
 import {onMounted, ref} from "vue";
 import type {Cameramodel} from "@/types";
 import axios, {type AxiosResponse} from "axios";
+import LoadingScreen from "@/components/LoadingScreen.vue";
+
+const isLoading = ref(false)
 
 const nameField = ref('')
 const brandField = ref('')
@@ -314,15 +322,17 @@ const stocks: Ref<Stock[]> = ref([])
 const searchField: Ref<string> = ref('')
 
 async function loadCameras() {
+  isLoading.value = true
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/cameramodel'
-  const response: AxiosResponse = await axios.get(endpoint);
-  const responseData: Camera[] = response.data;
-  responseData.forEach(
-      (cameramodel: Camera) => {
-        cameras.value.push(cameramodel)
-      }
-  )
+  try {
+    const response = await axios.get(endpoint)
+    cameras.value = response.data
+  } catch (e) {
+    console.log(e)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 async function loadStocks() {

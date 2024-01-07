@@ -2,17 +2,22 @@
   <form class="form-inline my-2 my-lg-0">
     <input class="form-control mr-sm-2" style="margin-bottom: 20px" type="search" v-model="searchField" placeholder="Search" aria-label="Search">
   </form>
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col" v-for="stock in filterStocks()" :key="stock.id">
-      <div class="card mb-3" style="max-width: 540px">
-        <div class="row g-0">
-          <div class="col-md-4">
-            <img :src=stock.staticImageUrl class="img-fluid rounded-start" :alt="stock.name">
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
-              <p class="card-text">{{ stock.description }}</p>
+  <div v-if="isLoading">
+    <LoadingScreen/>
+  </div>
+  <div v-else>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="col" v-for="stock in filterStocks()" :key="stock.id">
+        <div class="card mb-3" style="max-width: 540px">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img :src=stock.staticImageUrl class="img-fluid rounded-start" :alt="stock.name">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">{{ stock.brand }} {{ stock.name }}</h5>
+                <p class="card-text">{{ stock.description }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -26,6 +31,7 @@
 import type {Ref} from "vue";
 import {onMounted, ref} from "vue";
 import axios from "axios";
+import LoadingScreen from "@/components/LoadingScreen.vue";
 
 type Stock = {
   id: number,
@@ -35,14 +41,22 @@ type Stock = {
   staticImageUrl: string
 }
 
+const isLoading = ref(false)
 const stocks: Ref<Stock[]> = ref([])
 const searchField: Ref<string> = ref('')
 
 async function loadStocks () {
+  isLoading.value = true
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
   const endpoint = baseUrl + '/stocks'
-  const response = axios.get(endpoint)
-  stocks.value = (await response).data
+  try {
+    const response = await axios.get(endpoint)
+    stocks.value = response.data
+  } catch (e) {
+    console.log(e)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(() => {
