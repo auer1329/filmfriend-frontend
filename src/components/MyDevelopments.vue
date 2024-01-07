@@ -6,7 +6,7 @@
     <div class="col" v-for="roll in rolls" :key="roll.id">
 
       <div class="card mb-3" style="max-width: 540px">
-        <button type="button" class="btn-close overlap-close" @click="deleteRoll(roll.id)" aria-label="Close"></button>
+        <button type="button" class="btn-close overlap-close" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" @click="selectedRollId = roll.id" aria-label="Close"></button>
         <div class="row g-0">
           <div class="col-md-4">
             <img :src=roll.stock.staticImageUrl class="img-fluid rounded-start" :alt="roll.stock.name">
@@ -40,7 +40,20 @@
       </div>
     </div>
   </div>
-
+  <!-- confirm delete modal -->
+  <div class="modal fade" id="confirmDeleteModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rolle löschen bestätigen</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-danger" @click="deleteRoll(selectedRollId)">Entfernen</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -74,6 +87,7 @@ type Stock = {
 
 const rolls: Ref<Roll[]> = ref([])
 const isLoading = ref(false)
+const selectedRollId = ref(0)
 
 async function loadRollsInDevelopment () {
   isLoading.value = true
