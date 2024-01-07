@@ -350,6 +350,7 @@ function loadStocks() {
 
 onMounted(() => {
   loadCameras()
+  loadStocks()
 })
 
 </script>
