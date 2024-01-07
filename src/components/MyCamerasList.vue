@@ -105,20 +105,22 @@
           <h5 class="modal-title">Film entwickeln</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <input placeholder="Lab Name" v-model="labNameField"> <br>
-          <input placeholder="Used ISO" v-model="usedIsoField"><br>
-          <input type="date" placeholder="Expected Pickup Date" v-model="expectedPickupDateField"><br>
-          <input placeholder="Notes" v-model="notesField">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="developRoll()">Save changes
-          </button>
-        </div>
+        <form id="developForm" @submit.prevent="developRoll">
+          <div class="modal-body">
+            <input placeholder="Lab Name" v-model="labNameField" required> <br>
+            <input placeholder="Used ISO" v-model="usedIsoField" type="number" required><br>
+            <input type="date" placeholder="Expected Pickup Date" v-model="expectedPickupDateField" required><br>
+            <input placeholder="Notes" v-model="notesField" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
   <!-- New Camera Modal -->
   <div class="modal fade" id="newCameraModal">
     <div class="modal-dialog">
@@ -127,31 +129,32 @@
           <h5 class="modal-title">Neue Kamera hinzufügen</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <form>
-            <div>
-              <br>
-              <input type="text" class="form-control" v-model="nameField" placeholder="Kameraname" required>
-              <br>
-              <input type="text" class="form-control" v-model="brandField" placeholder="Marke" required>
-              <br>
-              <input type="text" class="form-control" v-model="modelField" placeholder="Modell" required>
-              <br>
-              <input type="text" class="form-control" v-model="staticImageUrlField" placeholder="Bild">
-              <br>
-              <select class="form-select" id="formatSelection" required>
-                <option value="1" selected disabled>Format auswählen</option>
-                <option value="35">35mm</option>
-                <option value="120">120mm</option>
-              </select>
-              <br>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-          <button type="button" class="btn btn-primary" @click="save()">Kamera hinzufügen</button>
-        </div>
+        <form id="newCameraForm" @submit.prevent="save">
+          <div class="modal-body">
+              <div>
+                <br>
+                <input type="text" class="form-control" v-model="nameField" placeholder="Kameraname" required>
+                <br>
+                <input type="text" class="form-control" v-model="brandField" placeholder="Marke" required>
+                <br>
+                <input type="text" class="form-control" v-model="modelField" placeholder="Modell" required>
+                <br>
+                <input type="text" class="form-control" v-model="staticImageUrlField" placeholder="Bild">
+                <br>
+                <select class="form-select" id="formatSelection" required>
+                  <option value="1" selected disabled>Format auswählen</option>
+                  <option value="35">35mm</option>
+                  <option value="120">120mm</option>
+                </select>
+                <br>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+            <button type="submit" class="btn btn-primary">Kamera hinzufügen</button>
+          </div>
+        </form>
+
       </div>
     </div>
   </div>
